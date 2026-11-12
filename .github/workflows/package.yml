@@ -42,6 +42,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # node-gyp drives Python + MSBuild.  The hosted image ships a very new
+      # Python (3.15) and Visual Studio 2026; pin Python so the native build is
+      # not affected by image updates.  node-gyp >= 12.1 knows VS 2026.
+      - name: Setup Python for node-gyp
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       # electron-builder only warns when an extraResources source is missing, so
       # a Windows build without the addon would succeed silently and ship an app
       # with no WASAPI exclusive output.  Build it (and verify it) first.
